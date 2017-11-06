@@ -1,0 +1,127 @@
+<!doctype html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>.gdoc structure viewer</title>
+        <meta name="description" content="Use this app to inspect your Google Document - made for Apps Script developers.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!--<link rel="apple-touch-icon" href="apple-touch-icon.png">
+         Place favicon.ico in the root directory -->
+
+
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+        
+        <style>
+         #jsonviewer {
+           margin-top: 50px;
+           padding: 24px;
+         }
+         .json-object.json-visible {
+           position: relative;
+         }
+         .json-object.json-visible::before {
+           content: " ";
+           position: absolute;
+           z-index: 100;
+           top: 0px;
+           left: 1em;
+           bottom: 0px;
+           border-left: 1px dashed #c2c2c2;
+         }
+        
+        </style>
+        
+        <?!= include('jsonTreeCss'); ?>
+        
+        <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+    </head>
+    <body>
+
+        <!-- Add your site or application content here -->
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">.gdoc Structure Viewer</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a id="expand" href="#">Expand All</a></li>
+        <li><a id="collapse" href="#">Collapse All</a></li>
+      </ul>
+      <form class="navbar-form navbar-left" role="search">
+        <div class="form-group">
+          <input id="gdocID" type="text" class="form-control" placeholder=".gdoc ID">
+        </div>
+        <button id="loadgdoc" type="submit" class="btn btn-default">Load .gdoc</button>
+      </form>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a target="_blank" href="http://www.lorut.no/apps/gdoc-structure-viewer/">Help/About</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<div class="container-fluid">
+  <div class="row">
+    <div id="jsonviewer">
+    
+
+    
+    </div>
+  </div>
+</div>
+
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+        <?!= include('jsonTreeJs'); ?>
+        <script>
+        $( function() {
+          var json = { "info" : "This where the json will be shown" };
+          setJson(json);
+          console.log($("#gdocID").val());
+        
+          $("button#loadgdoc").click(function(e) {
+            e.preventDefault();
+            google.script.run.withSuccessHandler(loadJson).withUserObject(this).getJson($("#gdocID").val());
+          });
+          
+          $("#expand").click(function(e) {
+            e.preventDefault();
+            $('.json-object-expand').each( function() {
+              $(this).parent().click();
+            });
+          });
+          
+          $("#collapse").click(function(e) {
+            e.preventDefault();
+            $('.json-object-collapse').each( function() {
+              $(this).parent().click();
+            });
+          });
+          
+          
+        });
+        
+        function loadJson(json){
+          setJson(json);
+        }
+        
+        function setJson(json){
+          document.getElementById("jsonviewer").innerHTML = JSONTree.create(json);
+        }
+        
+        </script>
+    </body>
+</html>
